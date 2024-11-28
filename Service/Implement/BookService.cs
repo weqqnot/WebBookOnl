@@ -21,6 +21,7 @@ namespace WebBookShell.Service
             return await _context.Books
                 .Include(b => b.Authors)
                 .Include(b => b.Genres)
+                .Include(b => b.Inventories)
                 .ToListAsync();
         }
 
@@ -46,6 +47,7 @@ namespace WebBookShell.Service
             var book = await _context.Books
                 .Include(b => b.Authors)
                 .Include(b => b.Genres)
+                .Include(b => b.Inventories)
                 .FirstOrDefaultAsync(b => b.BookId == id);
 
             if (book == null) throw new KeyNotFoundException("Book not found.");

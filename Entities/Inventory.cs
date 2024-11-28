@@ -11,6 +11,10 @@ namespace WebBookShell.Entities
         public int BookId { get; set; }
         [Required]
         public int Quantity { get; set; }
+        [Required]
+        [Column(TypeName = "decimal(18, 2)")]
+        public decimal CostPrice { get; set; } // giá nhập vào
+        public int QuantityForSale { get; set; }
 
         public Book? Books { get; set; }
         public ICollection<BookForSale> BookForSale { get; set; }

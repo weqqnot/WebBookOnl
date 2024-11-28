@@ -36,6 +36,13 @@ namespace WebBookShell.Controllers
             return Ok(quantity);
         }
 
+        [HttpPost("TransferToSale")]
+        public async Task<IActionResult> TransferToSale([FromBody] DTO.InventoryRequest.TransferBookRequest request)
+        {
+            await _inventoryService.TransferToSale(request.BookId, request.Quantity);
+            return Ok("Book transferred to sale.");
+        }
+
         [HttpDelete("Delete/{BookId}")]
         public async Task<IActionResult> RemoveBook(int BookId)
         {
