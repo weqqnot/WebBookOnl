@@ -12,7 +12,7 @@ using WebBookShell.Data;
 namespace WebBookShell.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241127200008_Database")]
+    [Migration("20241128011332_Database")]
     partial class Database
     {
         /// <inheritdoc />
@@ -299,6 +299,23 @@ namespace WebBookShell.Migrations
                     b.HasKey("RoleId");
 
                     b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            RoleId = 1,
+                            RoleName = "Admin"
+                        },
+                        new
+                        {
+                            RoleId = 2,
+                            RoleName = "Staff"
+                        },
+                        new
+                        {
+                            RoleId = 3,
+                            RoleName = "Customer"
+                        });
                 });
 
             modelBuilder.Entity("WebBookShell.Entities.User", b =>

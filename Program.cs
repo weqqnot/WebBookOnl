@@ -14,6 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<JwtHelper>(); // Đăng ký JwtHelper
 builder.Services.AddScoped<IUserManagementService, UserManagementService>();
+builder.Services.AddScoped<IBookService, BookService>();
 
 // Cấu hình DbContext sử dụng SQL Server
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
