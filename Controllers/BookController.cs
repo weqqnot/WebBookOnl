@@ -1,9 +1,11 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebBookShell.DTOs;
 using WebBookShell.Entities;
 using WebBookShell.Service.Interface;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace WebBookShell.Controllers
 {
@@ -23,7 +25,19 @@ namespace WebBookShell.Controllers
         public async Task<ActionResult> GetAllBooks()
         {
             var books = await _bookService.GetAllBooksAsync();
-            return Ok(books);
+
+            // Chỉ trả về các trường cần thiết
+            var response = books.Select(book => new
+            {
+                book.BookId,
+                book.Title,
+                book.Description,
+                book.AuthorName,
+                book.GenreName,
+                book.Price
+            });
+
+            return Ok(response);
         }
 
         // GET: api/Books/author/{authorName}
@@ -31,7 +45,19 @@ namespace WebBookShell.Controllers
         public async Task<ActionResult> GetBooksByAuthor(string authorName)
         {
             var books = await _bookService.GetBooksByAuthorAsync(authorName);
-            return Ok(books);
+
+            // Chỉ trả về các trường cần thiết
+            var response = books.Select(book => new
+            {
+                book.BookId,
+                book.Title,
+                book.Description,
+                book.AuthorName,
+                book.GenreName,
+                book.Price
+            });
+
+            return Ok(response);
         }
 
         // GET: api/Books/genre/{genreName}
@@ -39,7 +65,19 @@ namespace WebBookShell.Controllers
         public async Task<ActionResult> GetBooksByGenre(string genreName)
         {
             var books = await _bookService.GetBooksByGenreAsync(genreName);
-            return Ok(books);
+
+            // Chỉ trả về các trường cần thiết
+            var response = books.Select(book => new
+            {
+                book.BookId,
+                book.Title,
+                book.Description,
+                book.AuthorName,
+                book.GenreName,
+                book.Price
+            });
+
+            return Ok(response);
         }
 
         // GET: api/Books/{id}
@@ -49,7 +87,19 @@ namespace WebBookShell.Controllers
             try
             {
                 var book = await _bookService.GetBookByIdAsync(id);
-                return Ok(book);
+
+                // Chỉ trả về các trường cần thiết
+                var response = new
+                {
+                    book.BookId,
+                    book.Title,
+                    book.Description,
+                    book.AuthorName,
+                    book.GenreName,
+                    book.Price
+                };
+
+                return Ok(response);
             }
             catch (KeyNotFoundException)
             {
@@ -72,7 +122,19 @@ namespace WebBookShell.Controllers
             };
 
             var newBook = await _bookService.AddBookAsync(book);
-            return CreatedAtAction(nameof(GetBookById), new { id = newBook.BookId }, newBook);
+
+            // Chỉ trả về các trường cần thiết
+            var response = new
+            {
+                newBook.BookId,
+                newBook.Title,
+                newBook.Description,
+                newBook.AuthorName,
+                newBook.GenreName,
+                newBook.Price
+            };
+
+            return CreatedAtAction(nameof(GetBookById), new { id = response.BookId }, response);
         }
 
         // PUT: api/Books/{id}
@@ -90,7 +152,19 @@ namespace WebBookShell.Controllers
                     GenreName = bookRequest.GenreName,
                     Price = bookRequest.Price
                 });
-                return Ok(updatedBook);
+
+                // Chỉ trả về các trường cần thiết
+                var response = new
+                {
+                    updatedBook.BookId,
+                    updatedBook.Title,
+                    updatedBook.Description,
+                    updatedBook.AuthorName,
+                    updatedBook.GenreName,
+                    updatedBook.Price
+                };
+
+                return Ok(response);
             }
             catch (KeyNotFoundException)
             {

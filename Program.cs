@@ -7,7 +7,7 @@ using WebBookShell.Service;
 using WebBookShell.Helper;
 using WebBookShell.Service.Interface;
 using Microsoft.OpenApi.Models;
-using WebBookShell.Service.Implement;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +16,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<JwtHelper>(); // Đăng ký JwtHelper
 builder.Services.AddScoped<IUserManagementService, UserManagementService>();
 builder.Services.AddScoped<IBookService, BookService>();
-builder.Services.AddScoped<IInventoryService, InventoryService>();
+
 
 // Cấu hình DbContext sử dụng SQL Server
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
