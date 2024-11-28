@@ -29,6 +29,14 @@ namespace WebBookShell.Controllers
             return Ok("Book quantity updated.");
         }
 
+
+        [HttpGet("InventoryInfo")]
+        public async Task<IActionResult> GetInventoryInfo()
+        {
+            var inventoryInfo = await _inventoryService.GetInvenInfoAsynnc();
+            return Ok(inventoryInfo);
+        }
+
         [HttpGet("Quantity/{BookId}")]
         public async Task<IActionResult> GetQuantity(int BookId)
         {
