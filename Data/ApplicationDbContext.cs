@@ -22,6 +22,7 @@ namespace WebBookShell.Data
         public DbSet<BookVoucher> BookVouchers { get; set; }
         public DbSet<BookAuthor> BookAuthor { get; set; }
         public DbSet<BookGenre> BookGenre { get; set; }
+        public DbSet<BookForSale> BookForSale { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -144,9 +145,26 @@ namespace WebBookShell.Data
                 .WithOne(bv => bv.Vouchers)
                 .HasForeignKey(bv => bv.VoucherId)
                 .OnDelete(DeleteBehavior.Cascade);
+            // Khoá cho nó
+            modelBuilder.Entity<BookForSale>()
+                .HasKey(bfs => new { bfs.BookId, bfs.Quantity });
+
+            // Quan hệ giữa Book và BookForSale
+            modelBuilder.Entity<BookForSale>()
+                .HasOne(bfs => bfs.Book)
+                .WithMany(b => b.BookForSale)
+                .HasForeignKey(bfs => bfs.BookId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Quan hệ giữa Inventory và BookForSale thông qua Quantity
+            modelBuilder.Entity<BookForSale>()
+                .HasOne(bfs => bfs.Inventory)
+                .WithMany(i => i.BookForSale)
+                .HasForeignKey(bfs => bfs.Quantity)
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
 
 
-    }
+    } 
 }

@@ -25,12 +25,14 @@ namespace WebBookShell.Entities
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Price { get; set; }
 
+
         public ICollection<Inventory> Inventories { get; set; } = new List<Inventory>();
         public ICollection<BookVoucher> BookVouchers { get; set; } = new List<BookVoucher>();
         public ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
         public ICollection<Author> Authors { get; set; } = new List<Author>();
         public ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
         public ICollection<BookGenre> BookGenres { get; set; } = new List<BookGenre>();
+        public ICollection<BookForSale> BookForSale { get; set; }
 
 
 

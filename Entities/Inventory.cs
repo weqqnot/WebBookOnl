@@ -13,6 +13,6 @@ namespace WebBookShell.Entities
         public int Quantity { get; set; }
 
         public Book? Books { get; set; }
-        
+        public ICollection<BookForSale> BookForSale { get; set; }
     }
 }
