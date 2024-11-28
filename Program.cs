@@ -105,6 +105,9 @@ builder.Services.AddSwaggerGen(options =>
 // Đăng ký các dịch vụ khác
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
