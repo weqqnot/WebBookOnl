@@ -23,7 +23,7 @@ namespace WebBookShell.Controller
             try
             {
                 var token = await _userService.Register(request);
-                return Ok(new { Token = token });
+                return Ok(new { message = "Đăng ký thành công", Token = token });
             }
             catch (UserException ex)
             {
@@ -38,7 +38,7 @@ namespace WebBookShell.Controller
             try
             {
                 var token = await _userService.Login(request);
-                return Ok(new { Token = token });
+                return Ok(new { message = "Đăng nhập thành công", Token = token });
             }
             catch (UserException ex)
             {
@@ -53,7 +53,7 @@ namespace WebBookShell.Controller
             try
             {
                 await _userService.ForgotPassword(request);
-                return Ok("Password updated successfully.");
+                return Ok(new { message = "Mật khẩu đã được cập nhật thành công." });
             }
             catch (UserException ex)
             {
@@ -68,7 +68,7 @@ namespace WebBookShell.Controller
             try
             {
                 await _userService.UpdateUser(userId, request);
-                return Ok("User updated successfully.");
+                return Ok(new { message = "Thông tin người dùng đã được cập nhật thành công." });
             }
             catch (UserException ex)
             {
@@ -83,7 +83,7 @@ namespace WebBookShell.Controller
             try
             {
                 await _userService.DeleteUser(userId);
-                return Ok("User deleted successfully.");
+                return Ok(new { message = "Người dùng đã được xóa thành công." });
             }
             catch (UserException ex)
             {

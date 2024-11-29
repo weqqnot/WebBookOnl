@@ -7,17 +7,19 @@ namespace WebBookShell.DTOs
         public int BookId { get; set; }
 
         [Required]
-        public string Title { get; set; }
+        public string? Title { get; set; }
 
         public string? Description { get; set; }
 
         [Required]
-        public string AuthorName { get; set; }
+        public string? AuthorName { get; set; }
 
         [Required]
-        public string GenreName { get; set; }
+        public string? GenreName { get; set; }
 
         [Required]
         public decimal Price { get; set; }
+        [Required]
+        public int Quantity { get; set; }
     }
 }

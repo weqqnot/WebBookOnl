@@ -3,9 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebBookShell.DTOs;
 using WebBookShell.Entities;
 using WebBookShell.Service.Interface;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 
 namespace WebBookShell.Controllers
 {
@@ -22,22 +20,11 @@ namespace WebBookShell.Controllers
 
         // GET: api/Books
         [HttpGet]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<ActionResult> GetAllBooks()
         {
             var books = await _bookService.GetAllBooksAsync();
-
-            // Chỉ trả về các trường cần thiết
-            var response = books.Select(book => new
-            {
-                book.BookId,
-                book.Title,
-                book.Description,
-                book.AuthorName,
-                book.GenreName,
-                book.Price
-            });
-
-            return Ok(response);
+            return Ok(new { message = "Danh sách sách đã được tải thành công", books });
         }
 
         // GET: api/Books/author/{authorName}
@@ -45,19 +32,11 @@ namespace WebBookShell.Controllers
         public async Task<ActionResult> GetBooksByAuthor(string authorName)
         {
             var books = await _bookService.GetBooksByAuthorAsync(authorName);
-
-            // Chỉ trả về các trường cần thiết
-            var response = books.Select(book => new
+            if (books == null || books.Count == 0)
             {
-                book.BookId,
-                book.Title,
-                book.Description,
-                book.AuthorName,
-                book.GenreName,
-                book.Price
-            });
-
-            return Ok(response);
+                return NotFound(new { message = $"Không tìm thấy sách của tác giả: {authorName}" });
+            }
+            return Ok(new { message = "Danh sách sách theo tác giả đã được tải thành công", books });
         }
 
         // GET: api/Books/genre/{genreName}
@@ -65,19 +44,11 @@ namespace WebBookShell.Controllers
         public async Task<ActionResult> GetBooksByGenre(string genreName)
         {
             var books = await _bookService.GetBooksByGenreAsync(genreName);
-
-            // Chỉ trả về các trường cần thiết
-            var response = books.Select(book => new
+            if (books == null || books.Count == 0)
             {
-                book.BookId,
-                book.Title,
-                book.Description,
-                book.AuthorName,
-                book.GenreName,
-                book.Price
-            });
-
-            return Ok(response);
+                return NotFound(new { message = $"Không tìm thấy sách theo thể loại: {genreName}" });
+            }
+            return Ok(new { message = "Danh sách sách theo thể loại đã được tải thành công", books });
         }
 
         // GET: api/Books/{id}
@@ -87,23 +58,26 @@ namespace WebBookShell.Controllers
             try
             {
                 var book = await _bookService.GetBookByIdAsync(id);
-
-                // Chỉ trả về các trường cần thiết
-                var response = new
-                {
-                    book.BookId,
-                    book.Title,
-                    book.Description,
-                    book.AuthorName,
-                    book.GenreName,
-                    book.Price
-                };
-
-                return Ok(response);
+                return Ok(new { message = "Thông tin sách đã được tải thành công", book });
             }
             catch (KeyNotFoundException)
             {
-                return NotFound();
+                return NotFound(new { message = "Sách không tồn tại" });
+            }
+        }
+
+        // GET: api/Books/{id}/Quantity
+        [HttpGet("{id}/Quantity")]
+        public async Task<ActionResult<int>> GetBookQuantity(int id)
+        {
+            try
+            {
+                var quantity = await _bookService.GetQuantityByIdAsync(id);
+                return Ok(new { message = "Số lượng sách đã được tải thành công", quantity });
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound(new { message = "Sách không tồn tại" });
             }
         }
 
@@ -118,23 +92,12 @@ namespace WebBookShell.Controllers
                 Description = bookRequest.Description,
                 AuthorName = bookRequest.AuthorName,
                 GenreName = bookRequest.GenreName,
-                Price = bookRequest.Price
+                Price = bookRequest.Price,
+                Quantity = bookRequest.Quantity
             };
 
             var newBook = await _bookService.AddBookAsync(book);
-
-            // Chỉ trả về các trường cần thiết
-            var response = new
-            {
-                newBook.BookId,
-                newBook.Title,
-                newBook.Description,
-                newBook.AuthorName,
-                newBook.GenreName,
-                newBook.Price
-            };
-
-            return CreatedAtAction(nameof(GetBookById), new { id = response.BookId }, response);
+            return CreatedAtAction(nameof(GetBookById), new { id = newBook.BookId }, new { message = "Sách đã được thêm thành công", newBook });
         }
 
         // PUT: api/Books/{id}
@@ -151,24 +114,12 @@ namespace WebBookShell.Controllers
                     AuthorName = bookRequest.AuthorName,
                     GenreName = bookRequest.GenreName,
                     Price = bookRequest.Price
-                });
-
-                // Chỉ trả về các trường cần thiết
-                var response = new
-                {
-                    updatedBook.BookId,
-                    updatedBook.Title,
-                    updatedBook.Description,
-                    updatedBook.AuthorName,
-                    updatedBook.GenreName,
-                    updatedBook.Price
-                };
-
-                return Ok(response);
+                }, bookRequest.Quantity);
+                return Ok(new { message = "Sách đã được cập nhật thành công", updatedBook });
             }
             catch (KeyNotFoundException)
             {
-                return NotFound();
+                return NotFound(new { message = "Sách không tồn tại" });
             }
         }
 
@@ -184,7 +135,7 @@ namespace WebBookShell.Controllers
             }
             catch (KeyNotFoundException)
             {
-                return NotFound();
+                return NotFound(new { message = "Sách không tồn tại" });
             }
         }
     }

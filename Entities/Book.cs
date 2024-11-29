@@ -26,12 +26,12 @@ namespace WebBookShell.Entities
         [Required]
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Price { get; set; }
+        [Required]
+        public int Quantity { get; set; }
 
-        public int Quantity => Inventories?.Sum(i => i.Quantity) ?? 0;
 
 
-        [JsonIgnore]
-        public ICollection<Inventory> Inventories { get; set; } = new List<Inventory>();
+
         [JsonIgnore]
         public ICollection<BookVoucher> BookVouchers { get; set; } = new List<BookVoucher>();
         [JsonIgnore]
@@ -42,8 +42,8 @@ namespace WebBookShell.Entities
         public ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
         [JsonIgnore]
         public ICollection<BookGenre> BookGenres { get; set; } = new List<BookGenre>();
-        [JsonIgnore]
-        public ICollection<BookForSale> BookForSale { get; set; }
+       
+
 
 
 

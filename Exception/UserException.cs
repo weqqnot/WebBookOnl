@@ -7,7 +7,9 @@ namespace WebBookShell.Exception
         // Constructor nhận một thông báo lỗi
         public UserException(string message) : base(message)
         {
+
         }
+
 
     }
 }

@@ -1,8 +1,10 @@
-using Microsoft.EntityFrameworkCore;
+Ôªøusing Microsoft.EntityFrameworkCore;
 using WebBookShell.Data;
 using WebBookShell.Entities;
 using WebBookShell.Service.Interface;
 using System.Threading.Tasks;
+using Microsoft.OpenApi.Writers;
+using System.Runtime.InteropServices;
 
 namespace WebBookShell.Service
 {
@@ -15,17 +17,16 @@ namespace WebBookShell.Service
             _context = context;
         }
 
-        // L?y t?t c? s·ch
+        // L?y t?t c? s√°ch
         public async Task<List<Book>> GetAllBooksAsync()
         {
             return await _context.Books
                 .Include(b => b.Authors)
                 .Include(b => b.Genres)
-                .Include(b => b.Inventories)
                 .ToListAsync();
         }
 
-        // L?y s·ch theo Author
+        // L?y s√°ch theo Author
         public async Task<List<Book>> GetBooksByAuthorAsync(string authorName)
         {
             return await _context.Books
@@ -33,7 +34,7 @@ namespace WebBookShell.Service
                 .ToListAsync();
         }
 
-        // L?y s·ch theo Genre
+        // L?y s√°ch theo Genre
         public async Task<List<Book>> GetBooksByGenreAsync(string genreName)
         {
             return await _context.Books
@@ -41,21 +42,31 @@ namespace WebBookShell.Service
                 .ToListAsync();
         }
 
-        // L?y s·ch theo ID
+        // L?y s√°ch theo ID
         public async Task<Book> GetBookByIdAsync(int id)
         {
             var book = await _context.Books
                 .Include(b => b.Authors)
                 .Include(b => b.Genres)
-                .Include(b => b.Inventories)
                 .FirstOrDefaultAsync(b => b.BookId == id);
 
             if (book == null) throw new KeyNotFoundException("Book not found.");
 
             return book;
         }
+        // L·∫•y s·ªë l∆∞·ª£ng theo id
+        public async Task<int> GetQuantityByIdAsync(int id)
+        {
+            var book = await _context.Books.FindAsync(id);
+            if (book == null)
+            {
+                throw new KeyNotFoundException("Book not found");
+            }
 
-        // ThÍm s·ch
+            return book.Quantity;
+        }
+
+        // Th√™m s√°ch
         public async Task<Book> AddBookAsync(Book book)
         {
             _context.Books.Add(book);
@@ -63,8 +74,8 @@ namespace WebBookShell.Service
             return book;
         }
 
-        // C?p nh?t s·ch
-        public async Task<Book> UpdateBookAsync(int id, Book book)
+        // C?p nh?t s√°ch
+        public async Task<Book> UpdateBookAsync(int id, Book book, int Quantity)
         {
             var existingBook = await _context.Books.FindAsync(id);
 
@@ -76,12 +87,17 @@ namespace WebBookShell.Service
             existingBook.AuthorName = book.AuthorName;
             existingBook.GenreName = book.GenreName;
 
+            existingBook.Quantity += Quantity;
+            if (existingBook.Quantity < 0) {
+                throw new InvalidOperationException("Quantity of Book not negative.");
+
+            }
             await _context.SaveChangesAsync();
 
             return existingBook;
         }
 
-        // XÛa s·ch
+        // X√≥a s√°ch
         public async Task DeleteBookAsync(int id)
         {
             var book = await _context.Books.FindAsync(id);

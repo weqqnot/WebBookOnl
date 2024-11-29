@@ -22,7 +22,7 @@ namespace WebBookShell.Data
         public DbSet<BookVoucher> BookVouchers { get; set; }
         public DbSet<BookAuthor> BookAuthor { get; set; }
         public DbSet<BookGenre> BookGenre { get; set; }
-        public DbSet<BookForSale> BookForSale { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -46,18 +46,19 @@ namespace WebBookShell.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             // Quan hệ giữa Cart và CartItem (1-N)
-            modelBuilder.Entity<Cart>()
-                .HasMany(c => c.CartItems)
-                .WithOne(ci => ci.Carts)
-                .HasForeignKey(ci => ci.CartId)
-                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<CartItem>()
+            .HasOne(ci => ci.Cart)  // CartItem có Cart
+            .WithMany(c => c.CartItems)  // Cart có nhiều CartItems
+            .HasForeignKey(ci => ci.CartId)
+            .OnDelete(DeleteBehavior.Cascade);
 
-            // Quan hệ giữa Book và CartItem (1-N)
-            modelBuilder.Entity<Book>()
-                .HasMany(b => b.CartItems)
-                .WithOne(ci => ci.Books)
+            // Quan hệ giữa CartItem và Book (N-1)
+            modelBuilder.Entity<CartItem>()
+                .HasOne(ci => ci.Book)  // CartItem có Book
+                .WithMany(b => b.CartItems)  // Book có nhiều CartItems
                 .HasForeignKey(ci => ci.BookId)
                 .OnDelete(DeleteBehavior.Cascade);
+
 
             // Quan hệ giữa Book và Author (N-N)
             modelBuilder.Entity<BookAuthor>()
@@ -84,13 +85,6 @@ namespace WebBookShell.Data
                 .WithOne(bg => bg.Genres)
                 .HasForeignKey(bg => bg.GenreName);
 
-
-            // Quan hệ giữa Book và Inventory (1-N)
-            modelBuilder.Entity<Book>()
-                .HasMany(b => b.Inventories)
-                .WithOne(i => i.Books)
-                .HasForeignKey(i => i.BookId)
-                .OnDelete(DeleteBehavior.Cascade);
 
             // Quan hệ giữa Order và User (N-1)
             modelBuilder.Entity<Order>()
@@ -145,26 +139,8 @@ namespace WebBookShell.Data
                 .WithOne(bv => bv.Vouchers)
                 .HasForeignKey(bv => bv.VoucherId)
                 .OnDelete(DeleteBehavior.Cascade);
-            // Khoá cho nó
-            modelBuilder.Entity<BookForSale>()
-                .HasKey(bfs => new { bfs.BookId, bfs.Quantity });
+            
 
-            // Quan hệ giữa Book và BookForSale
-            modelBuilder.Entity<BookForSale>()
-                .HasOne(bfs => bfs.Book)
-                .WithMany(b => b.BookForSale)
-                .HasForeignKey(bfs => bfs.BookId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            // Quan hệ giữa Inventory và BookForSale thông qua Quantity
-            modelBuilder.Entity<BookForSale>()
-                .HasOne(bfs => bfs.Inventory)
-                .WithMany(i => i.BookForSale)
-                .HasForeignKey(bfs => bfs.Quantity)
-                .OnDelete(DeleteBehavior.Restrict);
         }
-
-
-
     } 
 }

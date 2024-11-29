@@ -7,6 +7,9 @@ using WebBookShell.Service;
 using WebBookShell.Helper;
 using WebBookShell.Service.Interface;
 using Microsoft.OpenApi.Models;
+using WebBookShell.Service.Implement;
+using WebBookShell.Interfaces;
+using WebBookShell.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +19,9 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<JwtHelper>(); // Đăng ký JwtHelper
 builder.Services.AddScoped<IUserManagementService, UserManagementService>();
 builder.Services.AddScoped<IBookService, BookService>();
+builder.Services.AddScoped<IInventoryService, InventoryService>();
+builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IOrderManagementService, OrderManagementService>();
 
 
 // Cấu hình DbContext sử dụng SQL Server
@@ -42,7 +48,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
-            RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+            RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
+          
         };
         // Thêm log khi token không hợp lệ
         options.Events = new JwtBearerEvents

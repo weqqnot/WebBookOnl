@@ -27,7 +27,7 @@ namespace WebBookShell.Service
         {
             // Kiểm tra nếu email đã tồn tại
             if (await _context.Users.AnyAsync(u => u.Email == request.Email))
-                throw new UserException("Email already exists.");
+                throw new UserException("Email đã tồn tại!");
 
             var passwordHash = PasswordHelper.HashPassword(request.Password);
 
@@ -51,7 +51,7 @@ namespace WebBookShell.Service
             await _context.SaveChangesAsync();
 
             // Không tạo token ở đây, chỉ trả về thông báo hoặc mã xác thực
-            return "User registered successfully. Please log in to get your token.";
+            return "Hãy đăng nhập để tạo token!";
         }
 
 

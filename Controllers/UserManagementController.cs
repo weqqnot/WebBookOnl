@@ -38,19 +38,19 @@ namespace WebBookShell.Controllers
                 var isValidToken = _jwtHelper.ValidateToken(token); // Sử dụng JwtHelper để xác thực token
                 if (!isValidToken)
                 {
-                    return Unauthorized(new { message = "Invalid or expired token" });
+                    return Unauthorized(new { message = "Token không hợp lệ hoặc đã hết hạn." });
                 }
 
                 // Lấy role từ token
                 var role = _jwtHelper.GetRoleFromToken(token);
                 if (role != "Admin")
                 {
-                    return Unauthorized(new { message = "You do not have permission to access this resource" });
+                    return Unauthorized(new { message = "Bạn không có quyền truy cập vào tài nguyên này." });
                 }
 
                 // Lấy thông tin người dùng từ database
                 var user = await _userManagementService.GetUserByEmailAsync(email);
-                return Ok(user);
+                return Ok(new { message = "Thông tin người dùng đã được lấy thành công.", user = user });
             }
             catch (UserException ex)
             {
@@ -74,14 +74,14 @@ namespace WebBookShell.Controllers
                 var isValidToken = _jwtHelper.ValidateToken(token); // Sử dụng JwtHelper để xác thực token
                 if (!isValidToken)
                 {
-                    return Unauthorized(new { message = "Invalid or expired token" });
+                    return Unauthorized(new { message = "Token không hợp lệ hoặc đã hết hạn." });
                 }
 
                 // Lấy role từ token
                 var role = _jwtHelper.GetRoleFromToken(token);
                 if (role != "Admin")
                 {
-                    return Unauthorized(new { message = "You do not have permission to access this resource" });
+                    return Unauthorized(new { message = "Bạn không có quyền truy cập vào tài nguyên này." });
                 }
 
                 // Thay đổi role cho người dùng theo email
@@ -91,7 +91,7 @@ namespace WebBookShell.Controllers
                 var newToken = _jwtHelper.GenerateJwtToken(user.UserId, user.Email, user.Role);
 
                 // Trả về token mới
-                return Ok(new { message = "Role người dùng đã được cập nhật thành công", token = newToken });
+                return Ok(new { message = "Role người dùng đã được cập nhật thành công.", token = newToken });
             }
             catch (UserException ex)
             {
